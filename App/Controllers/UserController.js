@@ -34,7 +34,9 @@ class UserController {
     const limit = Number(req.query.limit) || 10;
     const offset = (page - 1) * limit;
     try{
+      const option = await FileUplode.option(req.query);
       const result = await User.findAll({
+        ...option,
         limit: limit,
         offset: offset,
         order: [['id', 'DESC']],
@@ -55,9 +57,9 @@ class UserController {
   }
 
   static async create(req, res) {
-    try {
+    try {      
       const result = await User.create({...req.body});
-      const jsonData = JSON.parse(req.body.infoList || [])
+      const jsonData = req.body.infoList;
       if (jsonData.length > 0) {
         let arr = [];
         for (let i = 0; i < jsonData.length; i++) {
@@ -78,15 +80,15 @@ class UserController {
 
   static async update(req, res) {
     try {
-      await Info.destroy({where: {userId: Number(req.params.id)}})
-      const result = await User.update({...req.body}, {where: {id: req.params.id}});
-      const jsonData = JSON.parse(req.body.infoList || [])
+      await Info.destroy({where: {userId: Number(req.params.id)}});
+      const result = await User.update({...req.body}, {where: {id: req.params.id}});      
+      const jsonData = req.body.infoList;
       if (jsonData.length > 0) {
         let arr = [];
         for (let i = 0; i < jsonData.length; i++) {
           const element = jsonData[i];
           arr.push({
-            userId: result.id,
+            userId: Number(req.params.id),
             qoshimcha: element.qoshimcha,
           })
         }        
@@ -112,7 +114,7 @@ class UserController {
         rasmlar.rasm = data;
         await rasmlar.save();
       }
-      const jsonData = JSON.parse(req.body.infoList || [])
+      const jsonData = JSON.parse(req.body.infoList) || req.body.infoList;
       if (jsonData.length > 0) {
         let arr = [];
         for (let i = 0; i < jsonData.length; i++) {
@@ -158,13 +160,13 @@ class UserController {
           await rasmlar.save();
         }
       }
-      const jsonData = JSON.parse(req.body.infoList || [])
+      const jsonData = JSON.parse(req.body.infoList) || req.body.infoList;
       if (jsonData.length > 0) {
         let arr = [];
         for (let i = 0; i < jsonData.length; i++) {
           const element = jsonData[i];
           arr.push({
-            userId: respond.id,
+            userId: Number(req.params.id),
             qoshimcha: element.qoshimcha,
           })
         }        

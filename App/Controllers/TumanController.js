@@ -1,6 +1,18 @@
 const { Tuman } = require('../../models');
 
 class TumanController {
+  static async tumanAll (req, res) {
+    try{
+      const result = await Tuman.findAll({
+        where: {viloyatId: Number(req.query.viloyatId)},
+        order: [['tuman', 'ASC']]
+      });
+      return res.json({ items: result, statusCode: 200 });
+    } catch (error) {
+      return res.json({ statusCode: 404 });
+    }
+  }
+
   static async get(req, res) {
     const page = Number(req.query.page) || 1;
     const limit = Number(req.query.limit) || 10;

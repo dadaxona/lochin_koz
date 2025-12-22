@@ -1,6 +1,24 @@
-const { Viloyat } = require('../../models');
+const { Viloyat, Tuman } = require('../../models');
 
 class ViloyatController {
+  static async viloyat (req, res) {
+    try{
+      const result = await Viloyat.findAll({
+        include: [
+          {
+            model: Tuman
+          }
+        ],
+        order: [['viloyat', 'ASC']]
+      });
+      return res.json({ items: result, statusCode: 200 });
+    } catch (error) {
+      console.log(error);
+      
+      return res.json({ statusCode: 404 });
+    }
+  }
+
   static async get(req, res) {
     const page = Number(req.query.page) || 1;
     const limit = Number(req.query.limit) || 10;

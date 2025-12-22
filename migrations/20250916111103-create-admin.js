@@ -9,10 +9,31 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      ism: {
+        type: Sequelize.STRING
+      },
+      familiya: {
+        type: Sequelize.STRING
+      },
+      sharif: {
+        type: Sequelize.STRING
+      },
+      lavozim: {
+        type: Sequelize.STRING
+      },
+      viloyatId: {
+        type: Sequelize.INTEGER
+      },
+      tumanId: {
+        type: Sequelize.INTEGER
+      },
       login: {
         type: Sequelize.STRING
       },
       password: {
+        type: Sequelize.STRING
+      },
+      role: {
         type: Sequelize.STRING
       },
       createdAt: {

@@ -22,7 +22,10 @@ class DavlatController {
           }
         ]
       })
-      return res.json({ items: result, items2: result2, statusCode: 200 });
+      const result3 = await Tuman.findAll({
+        where: {viloyatId: Number(req.query.viloyatId)}
+      })
+      return res.json({ items: result, items2: result2, items3: result3, statusCode: 200 });
     } catch (error) {
       return res.json({ statusCode: 404 });
     }

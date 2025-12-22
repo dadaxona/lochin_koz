@@ -13,6 +13,11 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 route.post('/verifiy', verifyToken, AdminController.verifiy);
+route.get('/xodim', verifyToken, AdminController.get);
+route.get('/xodim2', verifyToken, AdminController.get2);
+route.post('/xodim', verifyToken, AdminController.create);
+route.put('/xodim/:id', verifyToken, AdminController.update);
+route.delete('/xodim/:id', verifyToken, AdminController.delete);
 
 route.get('/catigoriya', CatigoriyaController.get);
 route.post('/catigoriya', CatigoriyaController.create);
@@ -31,11 +36,13 @@ route.put('/davlat/:id', DavlatController.update);
 route.delete('/davlat/:id', DavlatController.delete);
 
 route.get('/viloyat', ViloyatController.get);
+route.get('/viloyatAll', ViloyatController.viloyat);
 route.post('/viloyat', ViloyatController.create);
 route.put('/viloyat/:id', ViloyatController.update);
 route.delete('/viloyat/:id', ViloyatController.delete);
 
 route.get('/tuman', TumanController.get);
+route.get('/tumanlar', TumanController.tumanAll);
 route.post('/tuman', TumanController.create);
 route.put('/tuman/:id', TumanController.update);
 route.delete('/tuman/:id', TumanController.delete);

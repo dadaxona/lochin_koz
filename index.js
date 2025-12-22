@@ -11,7 +11,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use("/images", express.static(path.join(__dirname, "uploads")));
 
-app.get('/get', AdminController.get);
 app.post('/login', AdminController.login);
 app.post('/registration', AdminController.registration);
 route.get('/checkking_auth', verifyToken, AdminController.checkking_auth);
