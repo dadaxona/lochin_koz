@@ -1,6 +1,6 @@
-const { User, Rasm, Info } = require('../../models');
+const { User, Rasm, Info, Yuklash, Davlat, Viloyat, Tuman } = require('../../models');
 const FileUplode = require('../Servis/FileUplode');
-
+const { DateTime } = require("luxon");
 class UserController {
   static async search (req, res) {
     try {
@@ -50,6 +50,46 @@ class UserController {
         ]
       });
       return res.json({ items: result, statusCode: 200 });
+    } catch (error) {
+      console.log(error);
+      return res.json({ statusCode: 404 });
+    }
+  }
+
+  static async yuklash (req, res) {
+    try {
+      const { ism, familiya, sharif, lavozim } = req.user.result;
+      const { setfio, pnfel, davlatId, viloyatId, tumanId, mahalla, sana, jinsi, catigoriya, bolim } = req.body;
+      let davlat, viloyat, tuman;
+      if (davlatId) {
+        const d = await Davlat.findByPk(Number(davlatId));
+        davlat = d.davlat;
+      }
+      if (viloyatId) {
+        const d = await Viloyat.findByPk(Number(viloyatId));
+        viloyat = d.viloyat;
+      }
+      if (tumanId) {
+        const d = await Tuman.findByPk(Number(tumanId));
+        tuman = d.tuman;
+      }
+      const nowInUzbekistan = DateTime.now().setZone("Asia/Tashkent");
+      const formattedDate = nowInUzbekistan.toFormat("yyyy-MM-dd HH:mm:ss");
+      await Yuklash.create({
+        xodim: `${ism} ${familiya} ${sharif}`,
+        lavozim: lavozim || '',
+        fio: setfio || '',
+        pnfel: pnfel || '',
+        davlat: davlat || '',
+        viloyat: viloyat || '',
+        tuman: tuman || '',
+        mahalla: mahalla || '',
+        sana: sana || '',
+        jinsi: jinsi || '',
+        catigoriya: catigoriya || '',
+        bolim: bolim || '',
+        vaqt: String(formattedDate)
+      })
     } catch (error) {
       console.log(error);
       return res.json({ statusCode: 404 });

@@ -19,3 +19,4 @@ app.use(verifyToken);
 app.use(route);
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, "0.0.0.0");
+// setfio, pnfel, davlatId, viloyatId, tumanId, mahalla, sana, jinsi, catigoriya, bolim
