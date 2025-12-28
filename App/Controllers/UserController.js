@@ -1,7 +1,58 @@
 const { User, Rasm, Info, Yuklash, Davlat, Viloyat, Tuman } = require('../../models');
 const FileUplode = require('../Servis/FileUplode');
 const { DateTime } = require("luxon");
+const axios = require('axios');
+const FormData = require('form-data');
+const { Op } = require('sequelize');
 class UserController {
+  static async search_photo(req, res) {
+    try {      
+      if (!req.file) return res.json({ statusCode: 400, message: "Rasm yo'q" });
+      const form = new FormData();
+      form.append('image', req.file.buffer, {
+        filename: 'search.jpg',
+        contentType: req.file.mimetype,
+      });
+      const response = await axios.post('http://localhost:5050/search', form, {
+        headers: {
+          ...form.getHeaders(),
+        },
+      });
+      const aiResult = response.data;
+      if (!aiResult && aiResult.results.length < 1) {
+        return res.json({ statusCode: 404 });
+      }
+      const ids = aiResult.results.map(item => item.id);
+      const users = await Rasm.findAll({
+        where: {
+          id: {
+            [Op.in]: ids
+          }
+        }
+      });
+      if (users && users.length) {
+        const id = users.map(item => item.userId);
+        const findAll = await User.findAll({
+          where: { id: {[Op.in]: id } },
+          include: [
+            {
+              model: Info
+            },
+            {
+              model: Rasm
+            }
+          ]
+        });
+        return res.json({ statusCode: 200, items: findAll });
+      } else {
+        return res.json({ statusCode: 404 });
+      }
+    } catch (error) {
+      console.error("AI Server bilan bog'lanishda xato:", error.message);
+      return res.json({ statusCode: 500 });
+    }
+  }
+
   static async search (req, res) {
     try {
       const page = Number(req.query.page) || 1;
@@ -166,6 +217,7 @@ class UserController {
         }        
         await Info.bulkCreate(arr);
       }
+      await FileUplode.CMD();
       return res.json({ statusCode: 200 });
     } catch (error) {
       console.log(error);
@@ -212,6 +264,7 @@ class UserController {
         }        
         await Info.bulkCreate(arr);
       }
+      await FileUplode.CMD();
       return res.json({ statusCode: 200 });
     } catch (error) {
       console.log(error);
@@ -233,6 +286,7 @@ class UserController {
         }
       }
       await respond.destroy();
+      await FileUplode.CMD();
       return res.json({ statusCode: 200 });
     } catch (error) {
       console.log(error);

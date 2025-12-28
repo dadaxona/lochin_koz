@@ -1,8 +1,15 @@
+const { execSync } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 const { Op } = require('sequelize');
 const sharp = require('sharp');
 class FileUplode {
+    static async CMD () {
+        const pythonPath = `"C:\\Users\\abdul\\Desktop\\lochin_koz\\venv\\Scripts\\python.exe"`;
+        const scriptPath = `"C:\\Users\\abdul\\Desktop\\lochin_koz\\create_model.py"`;
+        execSync(`${pythonPath} ${scriptPath}`, { stdio: 'inherit' });
+        console.log("Model muvaffaqiyatli yangilandi.");
+    }
     static async imgSize(buffer) {
         const maxSize = 200 * 1024;
         const width = 480;
@@ -60,6 +67,9 @@ class FileUplode {
     }
     static async option (query) {
         let where = {};
+        if (query.id) {
+            where.id = Number(query.id);
+        }
         if (query.davlatId) {
             where.davlatId = Number(query.davlatId);
         }

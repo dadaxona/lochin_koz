@@ -49,6 +49,7 @@ route.delete('/tuman/:id', TumanController.delete);
 
 route.post('/yuklash', UserController.yuklash);
 route.get('/search', UserController.search);
+route.post('/search_photo', upload.single('images'), UserController.search_photo);
 route.get('/user', UserController.get);
 route.post('/user', UserController.create);
 route.put('/user/:id', UserController.update);
