@@ -1,20 +1,25 @@
-const { Catigoriya, Bolim } = require('../../models');
+const { Bolim, Catigoriya, Toifa } = require('../../models');
 
-class CatigoriyaController {
+class ToifaController {
   static async get(req, res) {    
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
+    const offset = (page - 1) * limit;
     try{
-      const page = Number(req.query.page) || 1;
-      const limit = Number(req.query.limit) || 10;
-      const offset = (page - 1) * limit;
-      const result = await Catigoriya.findAll({
-        limit: limit,
-        offset: offset,
-        order: [['id', 'DESC']],
+      const result = await Toifa.findAll({
         include: [
           {
-            model: Bolim
+            model: Bolim,
+            include: [
+              {
+                model: Catigoriya,
+              }
+            ]
           }
-        ]
+        ],
+        limit: limit,
+        offset: offset,
+        order: [['id', 'DESC']]
       });
       return res.json({ items: result, statusCode: 200 });
     } catch (error) {
@@ -24,7 +29,7 @@ class CatigoriyaController {
 
   static async create(req, res) {
     try {
-      const result = await Catigoriya.create({...req.body});
+      const result = await Toifa.create({...req.body});
       return res.json({ items: result, statusCode: 200 });
     } catch (error) {
       return res.json({ statusCode: 404 });
@@ -33,7 +38,7 @@ class CatigoriyaController {
 
   static async update(req, res) {
     try {
-      const result = await Catigoriya.update({...req.body}, {where: {id: Number(req.params.id)}});
+      const result = await Toifa.update({...req.body}, {where: {id: req.params.id}});
       return res.json({ items: result, statusCode: 200 });
     } catch (error) {
       return res.json({ statusCode: 404 });
@@ -42,7 +47,7 @@ class CatigoriyaController {
 
   static async delete(req, res) {
     try {
-      const result = await Catigoriya.destroy({where: {id: Number(req.params.id)}});
+      const result = await Toifa.destroy({where: {id: req.params.id}});
       return res.json({ items: result, statusCode: 200 });
     } catch (error) {
       return res.json({ statusCode: 404 });
@@ -50,4 +55,4 @@ class CatigoriyaController {
   }
 }
 
-module.exports = CatigoriyaController;
+module.exports = ToifaController;

@@ -10,11 +10,15 @@ class FileUplode {
         execSync(`${pythonPath} ${scriptPath}`, { stdio: 'inherit' });
         console.log("Model muvaffaqiyatli yangilandi.");
     }
+    
     static async imgSize(buffer) {
-        const maxSize = 200 * 1024;
+        const maxSize = 1000 * 1024;
         const width = 480;
         const height = 640;
         let quality = 80;
+        if (buffer.length <= maxSize) {
+            return buffer;
+        }
         let output = await sharp(buffer)
             .rotate()
             .resize(width, height, { fit: 'inside' })

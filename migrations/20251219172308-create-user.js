@@ -30,6 +30,26 @@ module.exports = {
         allowNull: true,
         type: Sequelize.STRING
       },
+      moshina: {
+        allowNull: true,
+        type: Sequelize.STRING
+      },
+      ishjoy: {
+        allowNull: true,
+        type: Sequelize.STRING
+      },
+      tel: {
+        allowNull: true,
+        type: Sequelize.STRING
+      },
+      sud: {
+        allowNull: true,
+        type: Sequelize.STRING
+      },
+      laqab: {
+        allowNull: true,
+        type: Sequelize.STRING
+      },
       jinsi: {
         allowNull: true,
         type: Sequelize.STRING
@@ -54,6 +74,9 @@ module.exports = {
         type: Sequelize.STRING
       },
       bolim: {
+        type: Sequelize.STRING
+      },
+      toifa: {
         type: Sequelize.STRING
       },
       createdAt: {

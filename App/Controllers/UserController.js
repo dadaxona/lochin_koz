@@ -110,7 +110,7 @@ class UserController {
   static async yuklash (req, res) {
     try {
       const { ism, familiya, sharif, lavozim } = req.user.result;
-      const { setfio, pnfel, davlatId, viloyatId, tumanId, mahalla, sana, jinsi, catigoriya, bolim } = req.body;
+      const { setfio, pnfel, davlatId, viloyatId, tumanId, mahalla, sana, jinsi, catigoriya, bolim, toifa } = req.body;
       let davlat, viloyat, tuman;
       if (davlatId) {
         const d = await Davlat.findByPk(Number(davlatId));
@@ -139,8 +139,10 @@ class UserController {
         jinsi: jinsi || '',
         catigoriya: catigoriya || '',
         bolim: bolim || '',
+        toifa: toifa || '',
         vaqt: String(formattedDate)
       })
+      return res.json({statusCode: 200})
     } catch (error) {
       console.log(error);
       return res.json({ statusCode: 404 });
@@ -217,7 +219,6 @@ class UserController {
         }        
         await Info.bulkCreate(arr);
       }
-      await FileUplode.CMD();
       return res.json({ statusCode: 200 });
     } catch (error) {
       console.log(error);
@@ -264,7 +265,6 @@ class UserController {
         }        
         await Info.bulkCreate(arr);
       }
-      await FileUplode.CMD();
       return res.json({ statusCode: 200 });
     } catch (error) {
       console.log(error);
@@ -286,7 +286,6 @@ class UserController {
         }
       }
       await respond.destroy();
-      await FileUplode.CMD();
       return res.json({ statusCode: 200 });
     } catch (error) {
       console.log(error);

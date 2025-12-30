@@ -26,6 +26,7 @@ module.exports = (sequelize, DataTypes) => {
     jinsi: DataTypes.STRING,
     catigoriya: DataTypes.STRING,
     bolim: DataTypes.STRING,
+    toifa: DataTypes.STRING,
     vaqt: DataTypes.STRING
   }, {
     sequelize,

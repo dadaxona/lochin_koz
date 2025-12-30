@@ -1,4 +1,4 @@
-const { Davlat, Viloyat, Tuman, Catigoriya, Bolim } = require('../../models');
+const { Davlat, Viloyat, Tuman, Catigoriya, Bolim, Toifa } = require('../../models');
 
 class DavlatController {
   static async all(req, res) {
@@ -18,7 +18,12 @@ class DavlatController {
       const result2 = await Catigoriya.findAll({
         include: [
           {
-            model: Bolim
+            model: Bolim,
+            include: [
+              {
+                model: Toifa
+              }
+            ]
           }
         ]
       })
