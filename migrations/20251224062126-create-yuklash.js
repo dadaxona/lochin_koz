@@ -45,6 +45,9 @@ module.exports = {
       bolim: {
         type: Sequelize.STRING
       },
+      toifa: {
+        type: Sequelize.STRING
+      },
       vaqt: {
         type: Sequelize.STRING
       },

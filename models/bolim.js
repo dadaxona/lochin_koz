@@ -12,7 +12,10 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Bolim.belongsTo(models.Catigoriya, {
         foreignKey: 'catigoriyaId'
-      })
+      });
+      Bolim.hasMany(models.Toifa, {
+        foreignKey: 'bolimId'
+      });
     }
   }
   Bolim.init({

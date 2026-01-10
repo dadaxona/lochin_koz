@@ -8,10 +8,21 @@ const ViloyatController = require('../Controllers/ViloyatController');
 const TumanController = require('../Controllers/TumanController');
 const UserController = require('../Controllers/UserController');
 const BolimController = require('../Controllers/BolimController');
+const ToifaController = require('../Controllers/ToifaController');
+const FileUplode = require('../Servis/FileUplode');
 const route = Router();
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
+route.post('/ai', async (req, res) => {
+    try {
+        await FileUplode.CMD()
+        return res.json({statusCode: 200});
+    } catch (error) {
+        console.log(error);
+        return res.json({statusCode: 404});
+    }
+});
 route.post('/verifiy', verifyToken, AdminController.verifiy);
 route.get('/xodim', verifyToken, AdminController.get);
 route.get('/xodim2', verifyToken, AdminController.get2);
@@ -28,6 +39,11 @@ route.get('/bolim', BolimController.get);
 route.post('/bolim', BolimController.create);
 route.put('/bolim/:id', BolimController.update);
 route.delete('/bolim/:id', BolimController.delete);
+
+route.get('/toifa', ToifaController.get);
+route.post('/toifa', ToifaController.create);
+route.put('/toifa/:id', ToifaController.update);
+route.delete('/toifa/:id', ToifaController.delete);
 
 route.get('/all', DavlatController.all);
 route.get('/davlat', DavlatController.get);
@@ -49,6 +65,7 @@ route.delete('/tuman/:id', TumanController.delete);
 
 route.post('/yuklash', UserController.yuklash);
 route.get('/search', UserController.search);
+route.post('/search_photo', upload.single('images'), UserController.search_photo);
 route.get('/user', UserController.get);
 route.post('/user', UserController.create);
 route.put('/user/:id', UserController.update);

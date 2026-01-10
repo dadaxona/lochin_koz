@@ -1,4 +1,4 @@
-const { Catigoriya } = require('../../models');
+const { Catigoriya, Bolim } = require('../../models');
 
 class CatigoriyaController {
   static async get(req, res) {    
@@ -9,7 +9,12 @@ class CatigoriyaController {
       const result = await Catigoriya.findAll({
         limit: limit,
         offset: offset,
-        order: [['id', 'DESC']]
+        order: [['id', 'DESC']],
+        include: [
+          {
+            model: Bolim
+          }
+        ]
       });
       return res.json({ items: result, statusCode: 200 });
     } catch (error) {

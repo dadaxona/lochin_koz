@@ -1,27 +1,96 @@
 const { User, Rasm, Info, Yuklash, Davlat, Viloyat, Tuman } = require('../../models');
 const FileUplode = require('../Servis/FileUplode');
 const { DateTime } = require("luxon");
+const axios = require('axios');
+const FormData = require('form-data');
+const { Op } = require('sequelize');
 class UserController {
+  static async search_photo(req, res) {
+    try {      
+      if (!req.file) return res.json({ statusCode: 400, message: "Rasm yo'q" });
+      const form = new FormData();
+      form.append('image', req.file.buffer, {
+        filename: 'search.jpg',
+        contentType: req.file.mimetype,
+      });
+      const response = await axios.post('http://localhost:5050/search', form, {
+        headers: {
+          ...form.getHeaders(),
+        },
+      });
+      const aiResult = response.data;
+      if (!aiResult && aiResult.results.length < 1) {
+        return res.json({ statusCode: 404 });
+      }
+      const ids = aiResult.results.map(item => item.id);
+      const users = await Rasm.findAll({
+        where: {
+          id: {
+            [Op.in]: ids
+          }
+        }
+      });
+      if (users && users.length) {
+        const id = users.map(item => item.userId);
+        const findAll = await User.findAll({
+          where: { id: {[Op.in]: id } },
+          include: [
+            {
+              model: Info
+            },
+            {
+              model: Rasm
+            }
+          ]
+        });
+        return res.json({ statusCode: 200, items: findAll });
+      } else {
+        return res.json({ statusCode: 404 });
+      }
+    } catch (error) {
+      console.error("AI Server bilan bog'lanishda xato:", error.message);
+      return res.json({ statusCode: 500 });
+    }
+  }
+
   static async search (req, res) {
     try {
+      let findAll;
       const page = Number(req.query.page) || 1;
       const limit = Number(req.query.limit) || 25;
       const offset = (page - 1) * limit;
-      const option = await FileUplode.option(req.query);
-      const findAll = await User.findAll({
-        ...option,
-        limit,
-        offset,
-        order: [['id', 'DESC']],
-        include: [
-          {
-            model: Info
-          },
-          {
-            model: Rasm
-          }
-        ]
-      })
+      if (req.query.qoshimcha) {
+        findAll = await User.findAll({
+          limit,
+          offset,
+          order: [['id', 'DESC']],
+          include: [
+            {
+              model: Info,
+              where: {qoshimcha: { [Op.like]: `%${req.query.qoshimcha}%` }}
+            },
+            {
+              model: Rasm
+            }
+          ]
+        })
+      } else {
+        const option = await FileUplode.option(req.query);
+        findAll = await User.findAll({
+          ...option,
+          limit,
+          offset,
+          order: [['id', 'DESC']],
+          include: [
+            {
+              model: Info
+            },
+            {
+              model: Rasm
+            }
+          ]
+        })
+      }
       return res.json({ statusCode: 200, items: findAll });
     } catch (error) {
       console.log(error);
@@ -59,7 +128,7 @@ class UserController {
   static async yuklash (req, res) {
     try {
       const { ism, familiya, sharif, lavozim } = req.user.result;
-      const { setfio, pnfel, davlatId, viloyatId, tumanId, mahalla, sana, jinsi, catigoriya, bolim } = req.body;
+      const { setfio, pnfel, davlatId, viloyatId, tumanId, mahalla, sana, jinsi, catigoriya, bolim, toifa } = req.body;
       let davlat, viloyat, tuman;
       if (davlatId) {
         const d = await Davlat.findByPk(Number(davlatId));
@@ -88,8 +157,10 @@ class UserController {
         jinsi: jinsi || '',
         catigoriya: catigoriya || '',
         bolim: bolim || '',
+        toifa: toifa || '',
         vaqt: String(formattedDate)
       })
+      return res.json({statusCode: 200})
     } catch (error) {
       console.log(error);
       return res.json({ statusCode: 404 });
